@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import Row from "./Row";
+import Row from "./components/Row";
 
 const App = () => {
   const [targetWord, setTargetWord] = useState("");
