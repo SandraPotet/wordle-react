@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
 import Row from "./components/Row";
+import messages from "./messages/fr";
+import { normalizeWord } from "./utils/normalizeWord";
 
 const App = () => {
   const [targetWord, setTargetWord] = useState("");
@@ -18,17 +20,20 @@ const App = () => {
         const response = await fetch("https://trouve-mot.fr/api/size/5");
         const data = await response.json();
         const word = data[0].name;
-        setTargetWord(word.toUpperCase());
+        setTargetWord(normalizeWord(word));
       } catch (error) {
         console.error("Erreur lors de la récupération du mot :", error);
-        setTargetWord("APPLE");
+        setTargetWord(normalizeWord("APPLE"));
       }
     };
     fetchRandomWord();
   }, []);
 
   const handleInputChange = (event) => {
-    setCurrentGuess(event.target.value.toUpperCase());
+    const rawGuess = event.target.value;
+    const normalizedGuess = normalizeWord(rawGuess);
+
+    setCurrentGuess(normalizedGuess.slice(0, 5));
   };
 
   const handleGuess = () => {
@@ -65,20 +70,24 @@ const App = () => {
       {!isGameOver && (
         <>
           <input
+            type="text"
             onKeyDown={handleKeyDown}
             onChange={handleInputChange}
             maxLength={targetWord.length}
-            placeholder="Enter your guess (5 letters)"
+            placeholder={messages.placeholder}
             value={currentGuess}
             ref={inputRef}
             autoFocus
+            autoCorrect="off"
+            autoCapitalize="characters"
+            spellCheck={false}
           />
-          <button onClick={handleGuess}>Guess</button>
+          <button onClick={handleGuess}>{messages.guess}</button>
         </>
       )}
-      {isGameOver && gameResult === "win" && <p>You win !</p>}
+      {isGameOver && gameResult === "win" && <p>{messages.win}</p>}
       {isGameOver && gameResult === "lose" && (
-        <p>{`Game over! The word was: ${targetWord}`}</p>
+        <p>{`${messages.lose} ${targetWord}`}</p>
       )}
     </div>
   );
