@@ -3,6 +3,8 @@ import "./App.css";
 import Row from "./components/Row";
 import messages from "./messages/fr";
 import { normalizeWord } from "./utils/normalizeWord";
+import { fetchRandomWord } from "./utils/fetchRandomWord";
+
 
 const App = () => {
   const [targetWord, setTargetWord] = useState("");
@@ -15,18 +17,16 @@ const App = () => {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    const fetchRandomWord = async () => {
+    const startGame = async () => {
       try {
-        const response = await fetch("https://trouve-mot.fr/api/size/5");
-        const data = await response.json();
-        const word = data[0].name;
-        setTargetWord(normalizeWord(word));
+        const word = await fetchRandomWord();
+        setTargetWord(word);
       } catch (error) {
         console.error("Erreur lors de la récupération du mot :", error);
         setTargetWord(normalizeWord("APPLE"));
       }
     };
-    fetchRandomWord();
+    startGame();
   }, []);
 
   const handleInputChange = (event) => {
@@ -56,6 +56,19 @@ const App = () => {
 
     inputRef.current?.focus();
   };
+
+  const handleResetGame = async () => {
+    setCurrentGuess("");
+    setGuesses([]);
+    setGameResult(null);
+    setIsGameOver(false);
+
+    const word = await fetchRandomWord();
+    setTargetWord(word);
+
+    inputRef.current?.focus();
+  };
+
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") handleGuess();
@@ -88,6 +101,11 @@ const App = () => {
       {isGameOver && gameResult === "win" && <p>{messages.win}</p>}
       {isGameOver && gameResult === "lose" && (
         <p>{`${messages.lose} ${targetWord}`}</p>
+      )}
+      {isGameOver && (
+        <button onClick={handleResetGame}>
+          {messages.playAgain}
+        </button>
       )}
     </div>
   );
