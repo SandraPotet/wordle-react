@@ -2,6 +2,7 @@ import React from "react";
 import "./Row.css"
 import { getWordleStatuses } from "../utils/wordleLogic"; 
 
+
 const Row = ({ guess, targetWord }) => {
 
   const statuses = getWordleStatuses(guess, targetWord);
