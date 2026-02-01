@@ -14,6 +14,7 @@ const App = () => {
   const [isGameOver, setIsGameOver] = useState(false);
   const [gameResult, setGameResult] = useState(null);
   const [wordLength, setWordLength] = useState(null);
+  const [selectedLength, setSelectedLength] = useState(5);
 
 
   const inputRef = useRef(null);
@@ -87,19 +88,25 @@ const App = () => {
     return (
       <div className="main-container">
         <h1>Wordle</h1>
+
         <p>Choisis le nombre de lettres du mot à deviner :</p>
 
-        <button onClick={() => setWordLength(3)}>3 lettres</button>
-        <button onClick={() => setWordLength(4)}>4 lettres</button>
-        <button onClick={() => setWordLength(5)}>5 lettres</button>
-        <button onClick={() => setWordLength(6)}>6 lettres</button>
-        <button onClick={() => setWordLength(7)}>7 lettres</button>
-        <button onClick={() => setWordLength(8)}>8 lettres</button>
-        <button onClick={() => setWordLength(9)}>9 lettres</button>
-        <button onClick={() => setWordLength(10)}>10 lettres</button>
-        <button onClick={() => setWordLength(11)}>11 lettres</button>
-        <button onClick={() => setWordLength(12)}>12 lettres</button>
+        <input
+          type="range"
+          min={3}
+          max={12}
+          step={1}
+          value={selectedLength}
+          onChange={(e) => setSelectedLength(Number(e.target.value))}
+        />
 
+        <p>
+          {selectedLength} lettres
+        </p>
+
+        <button onClick={() => setWordLength(selectedLength)}>
+          Commencer la partie
+        </button>
       </div>
     );
   } else {
