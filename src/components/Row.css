@@ -2,8 +2,11 @@
   display: flex;
   justify-content: center;
   gap: 4px;
-  margin: 5px;
-  max-width: 100%;
+  margin: 5px auto;
+  max-width: calc(100vw - 16px);
+
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 
 .letter {
